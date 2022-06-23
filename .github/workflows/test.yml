@@ -1,0 +1,51 @@
+name: Test Slack notification
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Slack channel ID
+        required: true
+        type: string
+      username:
+        description: Slack username
+        required: false
+        type: string
+        default: github-actions
+      icon-url:
+        description: Slack icon url
+        required: false
+        type: string
+        default: https://avatars.githubusercontent.com/in/15368?v=4
+      text:
+        description: Block text
+        required: true
+        default: Main block text
+        type: string
+      attachment_text:
+        description: Attachment text
+        required: false
+        type: string
+      SLACK_WEBHOOK_URL:
+        description: Slack webhook url
+        required: true
+
+jobs:
+  test-slack-notification:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Mask SLACK_WEBHOOK_URL
+      run: |
+        SECRET_VALUE=$(jq -r '.inputs.SLACK_WEBHOOK_URL' $GITHUB_EVENT_PATH)
+        echo "::add-mask::$SECRET_VALUE"
+    - uses: actions/checkout@v2
+    - name: Test
+      uses: ./
+      with: 
+        channel: ${{ github.event.inputs.channel }}
+        username: ${{ github.event.inputs.username }}
+        icon-url: ${{ github.event.inputs.icon-url }}
+        text: ${{ github.event.inputs.text }}
+        attachment-text: ${{ github.event.inputs.attachment-text }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ github.event.inputs.SLACK_WEBHOOK_URL }}

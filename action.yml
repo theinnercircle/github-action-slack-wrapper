@@ -8,32 +8,28 @@ inputs:
     description: Slack username
     required: false
     default: github-actions
-  icon_url:
+  icon-url:
     description: Slack icon url
     required: false
     default: https://avatars.githubusercontent.com/in/15368?v=4
   text:
     description: Block text
     required: true
-  attachment_text:
+  attachment-text:
     description: Attachment text
     required: false
-  SLACK_WEBHOOK_URL:
-    required: true
 runs:
   using: "composite"
   steps:
   - name: Slack notification
     uses: 8398a7/action-slack@v3
-    env:
-      SLACK_WEBHOOK_URL: ${{ inputs.SLACK_WEBHOOK_URL }}
     with:
       status: custom
       custom_payload: |
         {
           channel: "${{ inputs.channel }}",
           username: "${{ inputs.username }}",
-          icon_url: "${{ inputs.icon_url }}",
+          icon_url: "${{ inputs.icon-url }}",
           blocks: [
             {
               type: "section",
@@ -45,3 +41,5 @@ runs:
           ],
           ${{ inputs.attachment_text && format('attachments: [{text: {0}}],', toJSON(inputs.attachment_text)) }}
         }
+    env:
+      SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
