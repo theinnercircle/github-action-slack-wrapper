@@ -39,7 +39,7 @@ runs:
               }
             },
           ],
-          ${{ inputs.attachment-text && format('attachments: [{text: {0}}],', toJSON(inputs.attachment-text)) }}
+          ${{ inputs.attachment-text && format('attachments: [{text: {0}],', toJSON(inputs.attachment-text)) }}
         }
     env:
       SLACK_WEBHOOK_URL: ${{ env.SLACK_WEBHOOK_URL }}
